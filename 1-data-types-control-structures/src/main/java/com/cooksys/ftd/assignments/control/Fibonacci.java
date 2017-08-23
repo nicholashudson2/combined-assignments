@@ -22,23 +22,24 @@ public class Fibonacci {
 	 *             if the given index is less than zero
 	 */
 	public static int atIndex(int i) throws IllegalArgumentException {
-		int sum = 0;
-		int previousIndex = 1;
-		int beforePreviousIndex = 0;
-		
-		if (i < 0)
-			throw new IllegalArgumentException("Index cannot be less than 0.");
-		
-		if(i == 0) {
-			return 1;
+		int sum = 0; // Variable to hold value of next index during loop below.
+		int previousIndex = 1; // Variable to hold previous index value for calculation.
+		int beforePreviousIndex = 0; // Variable to hold 2nd previous index value for calculation.
+
+		if (i > 0) { // Logic test to filter out values less than 0.
+			if (i != 0) { // Logic test to filter out values equal to 0.
+				for (int index = 1; index <= i; index++) { // Iterates through all integers from 1 through i.
+					sum = previousIndex + beforePreviousIndex; // Updates sum to contain current index value.
+					beforePreviousIndex = previousIndex; // Updates second previous index value.
+					previousIndex = sum; // Updates previous index value.
+				}
+				return sum; // Returns value at index i if i is not negative or equal to 0.
+			} else {
+				return 1; // Returns 1 if i is equal to 0.
+			}
+		} else {
+			throw new IllegalArgumentException("Index cannot be less than 0."); // Returns exception if i is negative.
 		}
-		
-		for(int index = 1; index <= i; index++) {
-			sum = previousIndex + beforePreviousIndex;
-			beforePreviousIndex = previousIndex;
-			previousIndex = sum;
-		}
-		return sum;
 	}
 
 	/**
@@ -55,21 +56,21 @@ public class Fibonacci {
 	 *             end is less than the given start
 	 */
 	public static int[] slice(int start, int end) throws IllegalArgumentException {
-		int[] slice;
-		int index;
-		
-		if (end < start || end < 0)
-			throw new IllegalArgumentException(
-					"Start and End parameters must be non-negative integers; End cannot be less than Start.");
-		
-		slice = new int[end - start];
-		index = 0;
+		int[] slice; // Declares array to be used in logic test.
+		int index; // Declares index variable used in logic test.
 
-		for (int i = start; i < end; i++) {
-			slice[index] = atIndex(i);
-			index++;
+		if (end > start || end < 0) { // Logic test to filter non negative integers, and instances where start value is greater than end value.
+			slice = new int[end - start]; // Instantiates array declared above, with size equal to end - start.
+			index = 0; // Instantiates index variable used in for loop.
+
+			for (int i = start; i < end; i++) { // Iterates over integers between start and end.
+				slice[index] = atIndex(i); // Obtains value corresponding to index.
+				index++; // Increments index variable.
+			}
+			return slice; // Returns array of values corresponding to given indices.
 		}
-		return slice;
+		throw new IllegalArgumentException(
+				"Start and End parameters must be non-negative integers; End cannot be less than Start.");
 	}
 
 	/**
@@ -83,6 +84,6 @@ public class Fibonacci {
 	 *             if the given count is negative
 	 */
 	public static int[] fibonacci(int count) throws IllegalArgumentException {
-		return slice(0, count);
+		return slice(0, count); // Simply returns array containing values corresponding to indices 0 through 115.
 	}
 }

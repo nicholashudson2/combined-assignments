@@ -31,14 +31,16 @@ public class FizzBuzz {
 	 *             if b is zero
 	 */
 	public static boolean divides(int a, int b) throws IllegalArgumentException {
-		if (b == 0) {
+		boolean divisible = false; // Instantiates default return value of false.
+
+		if (b != 0) { // Checks that b does not equal 0.
+			if (a % b == 0) { // If a divides by b evenly, returns true.
+				divisible = true;
+			}
+			return divisible;
+		} else {
 			throw new IllegalArgumentException("Divisor cannot equal 0");
 		}
-		boolean divisible = false;
-		if (a % b == 0) {
-			divisible = true;
-		}
-		return divisible;
 	}
 
 	/**
@@ -54,17 +56,14 @@ public class FizzBuzz {
 	 *         divisible by either 3 or 5
 	 */
 	public static String message(int n) {
-		String message = null;
-		if (divides(n, 15) || divides(n, 5) || divides(n, 3)) {
-			if (divides(n, 15)) {
+		String message = null; // Instantiates default return value as null.
+		if (divides(n, 5) || divides(n, 3)) { // Logic test to filter out integers not divisible by 3 or 5.
+			if (divides(n, 15)) // Assigns return value for integers divisible by 3 and 5.
 				message = n + ": FizzBuzz";
-			} else if (divides(n, 5)) {
+			if (divides(n, 5)) // Assigns return value for integers divisible by 5.
 				message = n + ": Buzz";
-			} else if (divides(n, 3)) {
+			if (divides(n, 3))  // Assigns return value for integers divisible by 3.
 				message = n + ": Fizz";
-			}
-		} else {
-			message = null;
 		}
 		return message;
 	}
@@ -83,17 +82,17 @@ public class FizzBuzz {
 	 *             if the given end is less than the given start
 	 */
 	public static String[] messages(int start, int end) throws IllegalArgumentException {
-		if (end < start) {
-			throw new IllegalArgumentException("End parameter must be greater than or equal to Start parameter.");
-		}
-		List<String> messages = new ArrayList<>();
-		for (int i = start; i < end; i++) {
-			if (message(i) != null) {
-				messages.add(message(i));
+		List<String> messages = new ArrayList<>(); // Instantiates an empty ArrayList to contain return messages.
+		
+		if (end > start) { // Logic test to filter out illegal arguments.
+			for (int i = start; i < end; i++) { // Iterates through all integers.
+				if (message(i) != null) { // Logic test; adds appropriate return messages to ArrayList.
+					messages.add(message(i));
+				}
 			}
+			return messages.toArray(new String[messages.size()]); // Instantiates and returns array from ArrayList above.
 		}
-		String[] messagesArray = messages.toArray(new String[messages.size()]);
-		return messagesArray;
+		throw new IllegalArgumentException("End parameter must be greater than or equal to Start parameter.");
 	}
 
 	/**
@@ -101,9 +100,9 @@ public class FizzBuzz {
 	 * the relevant messages to sysout
 	 */
 	public static void main(String[] args) {
-		String[] messages = messages(1, 116);
-		for(String s : messages) {
-			System.out.println(s);
+		String[] messages = messages(1, 116); // Instantiates divisibility message array using Messages method.
+		for (String s : messages) { // Iterates through array.
+			System.out.println(s); // Outputs divisibility messages to system output stream.
 		}
 	}
 
