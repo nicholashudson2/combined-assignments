@@ -19,8 +19,8 @@ public class SimplifiedRational implements IRational {
 		if (a <= 0 || b < 0) {
 			throw new IllegalArgumentException(
 					"Parameter a must be a positive, non-zero integer; Parameter b must be a positive integer.");
-		} else {
-			if (a == 0)
+		} else { 
+			if (a == 0) // Uses Euclidean algorithm to efficiently find greatest common divisor/denominator.
 				return b;
 			while (b != 0) {
 				if (a > b)
@@ -47,16 +47,17 @@ public class SimplifiedRational implements IRational {
 	 *             if the given denominator is 0
 	 */
 	public static int[] simplify(int numerator, int denominator) throws IllegalArgumentException {
-		int[] simplified;
-		int divisor;
+		int[] simplified = new int[] {numerator, denominator}; // Instantiates array with initial values; returns this if numerator = 0.
+		int index = 0;
 
 		if (denominator == 0) {
 			throw new IllegalArgumentException("Denominator cannot equal 0.");
 		}
-		divisor = gcd(Math.abs(numerator), Math.abs(denominator));
-		simplified = new int[2];
-		simplified[0] = numerator / divisor;
-		simplified[1] = denominator / divisor;
+		
+		for(int i : simplified) {
+			simplified[index] = i / gcd(Math.abs(numerator), Math.abs(denominator)); // Iterates over array, dividing both values contained within by the greatest common denominator, and updating the array contents.
+			index++;
+		}
 		return simplified;
 	}
 
@@ -77,18 +78,17 @@ public class SimplifiedRational implements IRational {
 	 */
 	public SimplifiedRational(int numerator, int denominator) throws IllegalArgumentException {
 		int[] simplifiedArray;
-
-		if (denominator == 0) {
-			throw new IllegalArgumentException("Denominator cannot equal 0.");
-		}
-
-		if (numerator == 0) {
-			this.numerator = numerator;
-			this.denominator = denominator;
+		this.numerator = numerator; // Sets numerator & denominator value; Not changed if numerator equals 0.
+		this.denominator = denominator;
+		
+		if (denominator != 0) {
+			if (numerator != 0) { // Simplifies both values if numerator does not equal zero.
+				simplifiedArray = SimplifiedRational.simplify(numerator, denominator);
+				this.numerator = simplifiedArray[0];
+				this.denominator = simplifiedArray[1];
+			}
 		} else {
-			simplifiedArray = SimplifiedRational.simplify(numerator, denominator);
-			this.numerator = simplifiedArray[0];
-			this.denominator = simplifiedArray[1];
+		throw new IllegalArgumentException("Denominator cannot equal 0.");
 		}
 	}
 
@@ -126,11 +126,7 @@ public class SimplifiedRational implements IRational {
 	 */
 	@Override
 	public SimplifiedRational construct(int numerator, int denominator) throws IllegalArgumentException {
-		if (denominator == 0) {
-			throw new IllegalArgumentException("Denominator must be a non-zero integer.");
-		}
-		SimplifiedRational simplified = new SimplifiedRational(numerator, denominator);
-		return simplified;
+		return new SimplifiedRational(numerator, denominator);
 	}
 
 	/**
@@ -142,16 +138,15 @@ public class SimplifiedRational implements IRational {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		boolean isEqual = false;
+		boolean isEqual = false; // Instantiates return statement with default value as false.
 
-		if (obj instanceof SimplifiedRational) {
+		if (obj instanceof SimplifiedRational) { // Casts object to type SimplifiedRational if type matches.
 			SimplifiedRational object = (SimplifiedRational) obj;
-
-			if (this.getNumerator() == object.getNumerator() && this.getDenominator() == object.getDenominator()) {
+			if (this.getNumerator() == object.getNumerator() && this.getDenominator() == object.getDenominator()) { // Logic to update return value if true.
 				isEqual = true;
 			}
 		}
-		return isEqual;
+		return isEqual; 
 	}
 
 	/**
@@ -165,12 +160,9 @@ public class SimplifiedRational implements IRational {
 	 */
 	@Override
 	public String toString() {
-		int numerator = this.getNumerator();
-		int denominator = this.getDenominator();
-		if ((numerator < 0) != (denominator < 0)) {
-			return "-" + Math.abs(numerator) + "/" + Math.abs(denominator);
-		} else {
-			return Math.abs(numerator) + "/" + Math.abs(denominator);
-		}
+		String str = Math.abs(numerator) + "/" + Math.abs(denominator); // Declares return string using absolute values.
+		if ((numerator < 0) != (denominator < 0)) // Logic to determine if simplified rational value is negative, updating string to reflect if true.
+			str = "-" + str;
+		return str;
 	}
 }

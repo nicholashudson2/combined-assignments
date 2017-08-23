@@ -20,10 +20,12 @@ public class Rational implements IRational {
 	 *             if the given denominator is 0
 	 */
 	public Rational(int numerator, int denominator) throws IllegalArgumentException {
-		if (denominator == 0)
-			throw new IllegalArgumentException("The denominator cannot equal 0.");
-		this.numerator = numerator;
-		this.denominator = denominator;
+		if (denominator != 0) {
+			this.numerator = numerator;
+			this.denominator = denominator;
+		} else {
+		throw new IllegalArgumentException("The denominator cannot equal 0.");
+		}
 	}
 
 	/**
@@ -72,13 +74,12 @@ public class Rational implements IRational {
 	 */
 	@Override
 	public boolean equals(Object obj) {
+		boolean isEqual = false; // Instantiates return value as false.
 
-		boolean isEqual = false;
-
-		if (obj instanceof Rational) {
+		if (obj instanceof Rational) { // Casts to Rational if types match.
 			Rational object = (Rational) obj;
 			
-			if (this.getNumerator() == object.getNumerator() && this.getDenominator() == object.getDenominator()) {
+			if (this.getNumerator() == object.getNumerator() && this.getDenominator() == object.getDenominator()) { // Logic to determine if values are equal; Updates return value if true.
 				isEqual = true;
 			}
 		}
@@ -96,12 +97,11 @@ public class Rational implements IRational {
 	 */
 	@Override
 	public String toString() {
-		int numerator = this.getNumerator();
-		int denominator = this.getDenominator();
-		if((numerator < 0) != (denominator < 0)) {
-			return "-" + Math.abs(numerator) + "/" + Math.abs(denominator);
-		} else {
-			return Math.abs(numerator) + "/" + Math.abs(denominator);
-		}
+		int numerator = getNumerator();
+		int denominator = getDenominator();
+		String str = Math.abs(numerator) + "/" + Math.abs(denominator); // Declares return string using absolute values.
+		if ((numerator < 0) != (denominator < 0)) // Logic to determine if rational value is negative, updating string to reflect if true.
+			str = "-" + str;
+		return str;
 	}
 }

@@ -50,12 +50,11 @@ interface IRational {
 	 *             if the numerator of this rational value is 0
 	 */
 	default IRational invert() throws IllegalStateException {
-		if (this.getNumerator() == 0) {
-			throw new IllegalStateException("Numerator cannot equal 0.");
+		if (this.getNumerator() != 0) { // Checks that numerator does not equal 0.
+			return construct(this.getDenominator(), this.getNumerator()); // Inverts numerator/denominator and returns new IRational object.
 		} else {
-			return construct(this.getDenominator(), this.getNumerator());
+			throw new IllegalStateException("Numerator cannot equal 0.");
 		}
-
 	}
 
 	/**
@@ -73,13 +72,13 @@ interface IRational {
 		int numerator;
 		int denominator;
 
-		if (that == null)
+		if (that != null) { // Checks that object passed into method is not null value.
+			numerator = (this.getNumerator() * that.getDenominator()) + (this.getDenominator() * that.getNumerator());
+			denominator = this.getDenominator() * that.getDenominator();
+			return construct(numerator, denominator); 
+		} else {
 			throw new IllegalArgumentException("That parameter cannot be a null value.");
-
-		numerator = (this.getNumerator() * that.getDenominator()) + (this.getDenominator() * that.getNumerator());
-		denominator = this.getDenominator() * that.getDenominator();
-		
-		return construct(numerator, denominator);
+		}
 	}
 
 	/**
@@ -97,13 +96,15 @@ interface IRational {
 		int numerator;
 		int denominator;
 
-		if (that == null)
+		if (that != null) { // Checks that object passed into method is not null value.
+			numerator = (this.getNumerator() * that.getDenominator()) - (this.getDenominator() * that.getNumerator());
+			denominator = this.getDenominator() * that.getDenominator();
+			return construct(numerator, denominator);
+		} else {
 			throw new IllegalArgumentException("That parameter cannot be a null value.");
-
-		numerator = (this.getNumerator() * that.getDenominator()) - (this.getDenominator() * that.getNumerator());
-		denominator = this.getDenominator() * that.getDenominator();
-		return construct(numerator, denominator);
+		}
 	}
+
 
 	/**
 	 * multiplication of rational values
@@ -119,14 +120,16 @@ interface IRational {
 	default IRational mul(IRational that) throws IllegalArgumentException {
 		int numerator;
 		int denominator;
-
-		if (that == null)
+		
+		if (that != null) { // Checks that object passed into method is not null value.
+			numerator = this.getNumerator() * that.getNumerator();
+			denominator = this.getDenominator() * that.getDenominator();
+			return construct(numerator, denominator);
+		} else {
 			throw new IllegalArgumentException("That parameter cannot be a null value.");
-
-		numerator = this.getNumerator() * that.getNumerator();
-		denominator = this.getDenominator() * that.getDenominator();
-		return construct(numerator, denominator);
+		}
 	}
+
 
 	/**
 	 * division of rational values
@@ -143,10 +146,12 @@ interface IRational {
 		int numerator;
 		int denominator;
 
-		if (that == null)
+		if (that != null) { // Checks that object passed into method is not null value.
+			numerator = this.getNumerator() * that.getDenominator();
+			denominator = this.getDenominator() * that.getNumerator();
+			return construct(numerator, denominator);
+		} else {
 			throw new IllegalArgumentException("That parameter cannot be a null value.");
-		numerator = this.getNumerator() * that.getDenominator();
-		denominator = this.getDenominator() * that.getNumerator();
-		return construct(numerator, denominator);
+		}
 	}
 }
