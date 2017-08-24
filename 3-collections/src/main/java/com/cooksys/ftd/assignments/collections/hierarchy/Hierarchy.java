@@ -10,6 +10,8 @@ import java.util.Set;
  */
 public interface Hierarchy<Element extends Hierarchical<Element, Parent>, Parent extends Element> {
 
+	
+	
     /**
      * Adds a given element to the hierarchy.
      * <p>
@@ -29,7 +31,8 @@ public interface Hierarchy<Element extends Hierarchical<Element, Parent>, Parent
      * @return true if the element was added successfully, false otherwise
      */
     boolean add(Element element);
-
+    
+    
     /**
      * @param element the element to search for
      * @return true if the element has been added to the hierarchy, false otherwise
