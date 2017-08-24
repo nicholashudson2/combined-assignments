@@ -57,12 +57,13 @@ public class FizzBuzz {
 	 */
 	public static String message(int n) {
 		String message = null; // Instantiates default return value as null.
+		
 		if (divides(n, 5) || divides(n, 3)) { // Logic test to filter out integers not divisible by 3 or 5.
 			if (divides(n, 15)) // Assigns return value for integers divisible by 3 and 5.
 				message = n + ": FizzBuzz";
-			if (divides(n, 5)) // Assigns return value for integers divisible by 5.
+			if (divides(n, 5) && !divides(n, 3)) // Assigns return value for integers divisible by 5.
 				message = n + ": Buzz";
-			if (divides(n, 3))  // Assigns return value for integers divisible by 3.
+			if (divides(n, 3) && !divides(n, 5))  // Assigns return value for integers divisible by 3.
 				message = n + ": Fizz";
 		}
 		return message;
@@ -84,15 +85,14 @@ public class FizzBuzz {
 	public static String[] messages(int start, int end) throws IllegalArgumentException {
 		List<String> messages = new ArrayList<>(); // Instantiates an empty ArrayList to contain return messages.
 		
-		if (end > start) { // Logic test to filter out illegal arguments.
+		if (end >= start) { // Logic test to filter out illegal arguments.
 			for (int i = start; i < end; i++) { // Iterates through all integers.
 				if (message(i) != null) { // Logic test; adds appropriate return messages to ArrayList.
 					messages.add(message(i));
 				}
 			}
 			return messages.toArray(new String[messages.size()]); // Instantiates and returns array from ArrayList above.
-		}
-		throw new IllegalArgumentException("End parameter must be greater than or equal to Start parameter.");
+		} else throw new IllegalArgumentException("End parameter must be greater than or equal to Start parameter.");
 	}
 
 	/**
