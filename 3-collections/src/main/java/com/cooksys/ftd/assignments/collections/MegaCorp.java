@@ -3,14 +3,13 @@ package com.cooksys.ftd.assignments.collections;
 import com.cooksys.ftd.assignments.collections.hierarchy.Hierarchy;
 import com.cooksys.ftd.assignments.collections.model.Capitalist;
 import com.cooksys.ftd.assignments.collections.model.FatCat;
-//import com.cooksys.ftd.assignments.collections.model.WageSlave;
-//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import com.cooksys.ftd.assignments.collections.model.WageSlave;
 
 import java.util.*;
 
 public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 
-	Set<Capitalist> capitalists = new HashSet<>();
+	Set<Capitalist> capitalistSet = new HashSet<>();
 
 	/**
 	 * Adds a given element to the hierarchy.
@@ -33,35 +32,13 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public boolean add(Capitalist capitalist) {
-		boolean added;
 
-		if (has(capitalist) || capitalist == null) {
-			added = false;
+		if (capitalist == null || (!capitalist.hasParent() && capitalist instanceof WageSlave)) { // Logical test to return false for elements not added to heirarchy.
+			return false;
 		} else {
-			added = capitalists.add(capitalist);
+			add(capitalist.getParent()); // Adds all elements not filtered above to heirarchy.
 		}
-		
-		
-		
-		if (has(capitalist.getParent()) && (capitalist instanceof FatCat)) {
-			
-			for (Capitalist c : capitalists) {
-				
-				if (c.getParent().equals(capitalist)) {
-					capitalists.add(capitalist);
-					added = true;
-				}
-			}
-		}
-		if (capitalist.hasParent()) {
-			capitalists.add(capitalist);
-			added = true;
-			
-			if (!capitalists.has(capitalist.getParent())) {
-				capitalists.add(capitalist.getParent());
-			}
-		}
-		return added;
+		return capitalistSet.add(capitalist);
 	}
 
 	/**
@@ -72,11 +49,7 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public boolean has(Capitalist capitalist) {
-		if (capitalists.contains(capitalist)) {
-			return true;
-		} else {
-			return false;
-		}
+		return (capitalistSet.contains(capitalist)); // Returns true/false indicating presence of element in hierarchy.
 	}
 
 	/**
@@ -85,9 +58,7 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public Set<Capitalist> getElements() {
-		Set<Capitalist> elements = new HashSet<>();
-		elements.addAll(capitalists);
-		return elements;
+		return new HashSet<>(capitalistSet); // Returns copy of the hierarchy.
 	}
 
 	/**
@@ -96,9 +67,11 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public Set<FatCat> getParents() {
-		Set<FatCat> parents = new HashSet<>();
-		for (Capitalist c : capitalists) {
-			parents.add(c.getParent());
+		Set<FatCat> parents = new HashSet<>(); // Instantiates empty set
+		for (Capitalist c : getElements()) { // Iterates through all elements in hierarchy.
+			if (c instanceof FatCat) { // Logical test filters out all parent elements.
+				parents.add((FatCat) c); // Adds parent elements to set, casting as FatCat.
+			}
 		}
 		return parents;
 	}
@@ -112,43 +85,31 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public Set<Capitalist> getChildren(FatCat fatCat) {
-		Set<Capitalist> children = new HashSet<>();
-		for (Capitalist c : capitalists) {
-			if (c.getParent() == fatCat) {
-				children.add(c);
-			}
+		Set<Capitalist> children = new HashSet<>(); // Instantiates empty set.
+
+		if (!has(fatCat)) // Logical test verifying hierarchy contains given element.
+			return children; // Returns empty set if element is not in hierarchy.
+		for (Capitalist c : capitalistSet) { // Iterates through all elements in hierarchy.
+			if (fatCat == c.getParent()) // Logical test comparing parent of current loop element to given element.
+				children.add(c); // Adds child element to return set.
 		}
 		return children;
 	}
 
 	/**
-     * @return a map in which the keys represent the parent elements in the hierarchy,
-     * and the each value is a set of the direct children of the associated parent, or an
-     * empty map if the hierarchy is empty.
-     */
-    @Override
-    public Map<FatCat, Set<Capitalist>> getHierarchy() {
-    	Set<Capitalist> all = new HashSet<>();
-    	Map<FatCat, Set<Capitalist>> heirarchy = new HashMap<>();
-    	Set<Capitalist> children = new HashSet<>();
-    	Set<FatCat> parents = new HashSet<>();
-    	
-    	all.addAll(capitalists);
-    	
-    	for(Capitalist cap : all) {
-    		parents.add(cap.getParent());
-    	}
-    	
-    	for(Capitalist p : parents) {
-    		for(Capitalist c : children) {
-    			if(c.getParent() == p) {
-    				children.add(c);
-    			}
-    			heirarchy.put((FatCat)p, children);
-    		}
-    	}
-    	return heirarchy;
-    }
+	 * @return a map in which the keys represent the parent elements in the
+	 *         hierarchy, and the each value is a set of the direct children of
+	 *         the associated parent, or an empty map if the hierarchy is empty.
+	 */
+	@Override
+	public Map<FatCat, Set<Capitalist>> getHierarchy() {
+		Map<FatCat, Set<Capitalist>> heirarchyMap = new HashMap<>(); // Instantiates empty HashMap.
+
+			for (Capitalist c : getParents()) { // Iterates through all parent elements.
+				heirarchyMap.put(((FatCat) c.clone()), getChildren((FatCat)c)); // Adds current loop element as parent key, set of children elements as value in HashMap.
+			}
+		return heirarchyMap;
+	}
 
 	/**
 	 * @param capitalist
@@ -159,13 +120,15 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public List<FatCat> getParentChain(Capitalist capitalist) {
-		List<FatCat> parentChain = new ArrayList<>();
-		Capitalist currentCapitalist = capitalist;
-		do {
-			parentChain.add(capitalist.getParent());
-			currentCapitalist = capitalist.getParent();
-		} while (currentCapitalist.hasParent());
-		return parentChain;
+		List<FatCat> parentChain = new ArrayList<>(); // Instantiates empty ArrayList to contain return values.
+
+		if (capitalist != null) { // Logical test to verify given element is not null.
+			while (capitalist.hasParent() && has(capitalist.getParent())) { // Logical test instantiating loop only while current element has a parent that is contained in the hierarchy.
+					capitalist = capitalist.getParent(); // Updates capitalist element to the current parent element
+					parentChain.add((FatCat)capitalist); // Adds current parent element to the ArrayList.
+			}
+		}
+		return parentChain; // Returns ArrayList containing parent elements, or empty list if first logical test fails.
 	}
 
 }
