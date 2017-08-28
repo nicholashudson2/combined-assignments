@@ -21,7 +21,7 @@ public class XMLCreator {
 		remoteConfig.setHost("localhost");
 		
 		Config config = new Config();
-		config.setStudentFilePath("C://Users/ftd-18/code/combined-assignments/4-socket-io-serialization/config/student.xml");
+		config.setStudentFilePath("config/student.xml");
 		config.setRemote(remoteConfig);
 		config.setLocal(localConfig);
 		
@@ -30,23 +30,27 @@ public class XMLCreator {
 		student.setLastName("Hudson");
 		student.setFavoriteIDE("IntelliJ");
 		student.setFavoriteLanguage("Java");
-		student.setFavoriteParadigm("Object-Oriented");
+		student.setFavoriteParadigm("Functional");
 		
 		try {
 			JAXBContext context = Utils.createJAXBContext();
-			File studentXml = new File("C://Users/ftd-18/code/combined-assignments/4-socket-io-serialization/config/student.xml");
+			File studentXml = new File("config/student.xml");
 			FileWriter studentOutput = new FileWriter(studentXml);
+			// Creates marshaller and marshalls student object to xml file.
 			Marshaller studentMarshaller = context.createMarshaller();
 			studentMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			studentMarshaller.marshal(student, studentOutput);
 			studentOutput.close();
+			System.out.println("student.xml file created.");
 			
-			File configXml = new File("C://Users/ftd-18/code/combined-assignments/4-socket-io-serialization/config/config.xml");
+			File configXml = new File("config/config.xml");
 			FileWriter configOutput = new FileWriter(configXml);
+			// Creates marshaller, and marshalls config object to xml file.
 			Marshaller configMarshaller = context.createMarshaller();
 			configMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			configMarshaller.marshal(config, configOutput);
 			configOutput.close();
+			System.out.println("config.xml file created.");
 			
 		} catch (JAXBException e) {
 			e.printStackTrace();

@@ -52,26 +52,26 @@ public class Server extends Utils {
 	 */
 	public static void main(String[] args) {
 		
-		// Declaring variables.
-		String configFilePath = "C://Users/ftd-18/code/combined-assignments/4-socket-io-serialization/config/config.xml"; 
+		String configFilePath = "config/config.xml"; 
 		JAXBContext context;
 		Config importConfig;
 		ServerSocket socket;
 		Socket clientSocket;
 
 		try {
-			context = Utils.createJAXBContext(); // Create context
-			importConfig = Utils.loadConfig(configFilePath, context); // Load Config object
-			socket = new ServerSocket(importConfig.getLocal().getPort()); // Instantiate ServerSocket on local port
-			clientSocket = socket.accept(); // Instantiate socket for incoming client connection.
+			context = Utils.createJAXBContext(); 
+			importConfig = Utils.loadConfig(configFilePath, context); 
+			socket = new ServerSocket(importConfig.getLocal().getPort()); 
+			System.out.println("Server is running. [CTRL] + [C] to disconnect. \nAwaiting incoming connection...");
+			clientSocket = socket.accept();
 			
 			// Creates marshaller, marshalls student object to xml file, sends to client via output stream.
 			context.createMarshaller().marshal(loadStudent(importConfig.getStudentFilePath(), context), clientSocket.getOutputStream());
+			System.out.println("File sent to client.");
 			
-			// Closing sockets
 			socket.close();
 			clientSocket.close();
-		} catch (IOException e) { // Exception catching.
+		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JAXBException e) {
 			e.printStackTrace();

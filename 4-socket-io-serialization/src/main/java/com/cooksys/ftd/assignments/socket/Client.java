@@ -25,16 +25,28 @@ public class Client {
 	 * @throws IOException 
 	 * @throws UnknownHostException 
      */
-    public static void main(String[] args) throws JAXBException, UnknownHostException, IOException {
-    	String configFilePath = "C://Users/ftd-18/code/combined-assignments/4-socket-io-serialization/config/config.xml";
-    	JAXBContext context = Utils.createJAXBContext();
-    	RemoteConfig remoteConfig = Utils.loadConfig(configFilePath, context).getRemote();
-    	InputStream input;
+    public static void main(String[] args) {
+    	JAXBContext context;
+		try {
+			context = Utils.createJAXBContext();
+			// Loads remote config data from config.xml file.
+			RemoteConfig remoteConfig = Utils.loadConfig("config/config.xml", context).getRemote();
+			InputStream input;
+			
+			try(Socket socket = new Socket(remoteConfig.getHost(), remoteConfig.getPort())) {
+				input = socket.getInputStream();
+				System.out.println("Connected. Awaiting file...");
+				// Creates unmarshaller and unmarshals student object from student.xml file.
+				Student unmarshalledStudent = (Student)context.createUnmarshaller().unmarshal(input);
+				System.out.println("File received...");
+				System.out.println(unmarshalledStudent.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
     	
-    	try(Socket socket = new Socket(remoteConfig.getHost(), remoteConfig.getPort())) {
-    		input = socket.getInputStream();
-    		Student unmarshalledStudent = (Student)context.createUnmarshaller().unmarshal(input);
-    		System.out.println(unmarshalledStudent.toString());
-    	}
     }
 }
